@@ -1,0 +1,6 @@
+class LibraryError(Exception):
+    ...
+
+
+class ValidationError(LibraryError):
+    ...
