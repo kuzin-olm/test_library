@@ -1,6 +1,7 @@
 from uuid import UUID, uuid4
 from collections import defaultdict
 
+from utils import normalize_str
 from module.common.domain.entity import Entity
 from module.common.domain.exception import ValidationError
 from module.book.domain.entity import BookEntity
@@ -10,8 +11,21 @@ from module.rental.domain.entity import RentalBookEntity
 class UserEntity(Entity):
     def __init__(self, uuid: UUID, name: str, books: list["RentalBookEntity"] = None):
         self.uuid: UUID = uuid
-        self.name: str = name
+        self._name: str = name
         self.books: list[RentalBookEntity] = books or []
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @name.setter
+    def name(self, value: str) -> None:
+        self._name = normalize_str(value)
+
+    @classmethod
+    def create(cls, name: str) -> "UserEntity":
+        name = normalize_str(name)
+        return cls(uuid=uuid4(), name=name)
 
     @property
     def readed_books(self) -> list[RentalBookEntity]:
@@ -36,7 +50,7 @@ class UserEntity(Entity):
 
     def add_book(self, book: BookEntity) -> None:
         if book.available_rent > 0:
-            book_to_rent = RentalBookEntity(uuid=uuid4(), book=book)
+            book_to_rent = RentalBookEntity.create(book=book)
             book.add_rented_book(book_to_rent)
             self.books.append(book_to_rent)
         else:

@@ -38,7 +38,7 @@ class UserCreateHandler(Handler):
             self.queue.append(MenuCommand())
             return
 
-        new_user = UserEntity(uuid=uuid4(), name=name)
+        new_user = UserEntity.create(name=name)
         container.user_repository.save(new_user)
         print(f"Создан новый пользователь {new_user.name}")
         self.queue.append(MenuCommand())

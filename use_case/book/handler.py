@@ -36,7 +36,7 @@ class BookCreateHandler(Handler):
         author = self.handle_input("Введите автора\n")
         genre = self.handle_input("Введите жанр\n")
         quantity = self.handle_input("Введите доступное кол-во\n", to_type=int)
-        new_book = BookEntity(uuid=uuid4(), title=title, author=author, genre=genre, quantity=quantity)
+        new_book = BookEntity.create(title=title, author=author, genre=genre, quantity=quantity)
         container.book_repository.save(new_book)
         print(f"Книга {new_book.title} создана, доступно {new_book.available_rent}")
         self.queue.append(MenuCommand())
